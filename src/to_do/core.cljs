@@ -1,16 +1,13 @@
 (ns to-do.core
-    (:require [reagent.core :as r :refer [atom]]
-              [re-frame.core :refer [subscribe dispatch dispatch-sync]]
+    (:require [reagent.core :as r]
+              [re-frame.core :refer [dispatch-sync]]
               [oops.core :refer [ocall]]
               [to-do.handlers]
-              [to-do.subs]
               [to-do.imports :refer [expo]]
-              [to-do.screens.home :refer [home-screen]]))
-
-(def ReactNative (js/require "react-native"))
+              [to-do.routing :refer [routing]]))
 
 (defn app-root []
- [home-screen])
+ [(r/adapt-react-class (routing))])
 
 (defn init []
   (dispatch-sync [:initialize-db])
