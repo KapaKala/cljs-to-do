@@ -38,3 +38,7 @@
   [validate-spec]
   (fn [db [_ value]]
     (assoc db :greeting value)))
+
+(reg-event-db
+  :set-fonts-loaded
+  (fn [db _] (assoc db :fonts-loaded true)))

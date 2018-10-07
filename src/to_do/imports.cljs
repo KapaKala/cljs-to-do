@@ -3,10 +3,10 @@
 
 (defonce ReactNative (js/require "react-native"))
 (def expo (js/require "expo"))
+(def font (.-Font expo))
 
-(def AtExpo (js/require "@expo/vector-icons"))
-(def ionicons (.-Ionicons AtExpo))
-(def icon (r/adapt-react-class ionicons))
+(def AtExpoIcons (js/require "@expo/vector-icons"))
+(def icon (r/adapt-react-class (.-Ionicons AtExpoIcons)))
 
 (def view (r/adapt-react-class (.-View ReactNative)))
 (def safe-area-view (r/adapt-react-class (.-SafeAreaView ReactNative)))
@@ -14,4 +14,4 @@
 (def text (r/adapt-react-class (.-Text ReactNative)))
 (def button (r/adapt-react-class (.-Button ReactNative)))
 (def touchable-highlight (r/adapt-react-class (.-TouchableHighlight ReactNative)))
-(def toucable-opacity (r/adapt-react-class (.-TouchableOpacity ReactNative)))
+(def touchable-opacity (r/adapt-react-class (.-TouchableOpacity ReactNative)))
