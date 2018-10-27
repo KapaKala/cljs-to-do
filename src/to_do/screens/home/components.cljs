@@ -7,9 +7,9 @@
             [reagent.core :as r]))
 
 (defn render-entry [entry]
-  ^{:key entry} [view {:style (:entry-container styles)}
-                 [text {:style {:color "grey" :font-family "roboto-mono-regular"}} (:id entry)]
-                 [text {:style (:entry-text styles)} (:value entry)]])
+  ^{:key (:id entry)} [view {:style (:entry-container styles)}
+                       [text {:style {:color "grey" :font-family "roboto-mono-regular"}} (:id entry)]
+                       [text {:style (:entry-text styles)} (:value entry)]])
 
 (defn header [navigate]
   [view {:style (:header styles)}
@@ -22,13 +22,12 @@
   (let [ani-val (:ani-val props)
         toggle (:toggle props)
         input-val (:input-val props)
-        save-input #(do (dispatch [:add-entry @input-val])
-                        (reset! input-val nil)
-                        (toggle))]
+        save-input #(toggle (fn [invocation] (when invocation (do (dispatch [:add-entry @input-val])
+                                                                  (reset! input-val nil)))))]
     [animated-view {:style (merge (:entry-form-container styles) {:transform [{:translateY (interpolate ani-val [0 1] [(* height 0.666) 0])}]})}
      [text {:style (:form-title styles)} "What would you like to remember?"]
      [text {:style (:form-title styles)} @input-val]
-     [text-input {:value @input-val
+     [text-input {:value             @input-val
                   :on-change-text    #(reset! input-val %)
                   :on-submit-editing #(when (some? @input-val) (save-input))
                   :style             (:form-input styles)}]
@@ -41,11 +40,11 @@
   (let [ani-val (animated-value 0)
         input-val (r/atom "kakka")
         toggle-state (r/atom false)
-        toggle #(do (start-animation (timing ani-val (if @toggle-state 0 1) 250))
-                    (reset! toggle-state (not @toggle-state))
-                    (.dismiss Keyboard))]
+        toggle (fn [cb] (do (start-animation (timing ani-val (if @toggle-state 0 1) 250) cb)
+                            (reset! toggle-state (not @toggle-state))
+                            (.dismiss Keyboard)))]
     [animated-view {:style (merge (:add-entry-container styles) {:width
-                                                                 (interpolate ani-val [0 1] [width width])
+                                                                 width
                                                                  :height
                                                                  (interpolate ani-val [0 1] [50 (* height 0.666)])})}
      [add-entry-form {:ani-val ani-val :input-val input-val :toggle toggle}]

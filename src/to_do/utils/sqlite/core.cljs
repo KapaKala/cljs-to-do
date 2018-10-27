@@ -19,7 +19,7 @@
   (transaction "select * from entries"
                nil
                (fn [_ res] (dispatch [:set-entries (js->clj (.. res -rows -_array) :keywordize-keys true)]))
-               (fn [error] (dispatch [:set-entry-error error]))))
+               (fn [error] (console.warn error))))
 
 (defn add-entry [entry on-success on-error]
   (transaction "insert into entries (done, value) values (?, ?)" [0 entry] on-success on-error))
@@ -31,4 +31,4 @@
   (transaction "update entries set done = 1 where id = ?" id on-success on-error))
 
 (defn clear-entries []
-  (transaction "delete from entries" nil (get-entries) #(console.warn "failed clearing table :(")))
+  (transaction "delete from entries" nil #(get-entries) #(console.warn "failed clearing table :(")))

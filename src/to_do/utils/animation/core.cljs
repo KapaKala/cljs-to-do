@@ -12,6 +12,8 @@
                                                              :duration duration
                                                              :easing (.in easing)
                                                              }))
+
 (defn interpolate [val input output] (.interpolate val #js{:inputRange (clj->js input)
                                                            :outputRange (clj->js output)}))
-(defn start-animation [animation] (.start animation))
+
+(defn start-animation [animation cb] (.start animation cb))

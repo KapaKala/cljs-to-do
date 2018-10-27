@@ -2,11 +2,11 @@
   (:require [re-frame.core :refer [reg-sub]]))
 
 (reg-sub
-  :get-entries
+  :entries
   (fn [db _]
     (:entries db)))
 
 (reg-sub
-  :get-entry-error
+  :entry-error
   (fn [db _]
     (:entry-error db)))
