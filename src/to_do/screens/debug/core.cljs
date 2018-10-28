@@ -13,7 +13,7 @@
 
 (defn debug-screen [props]
   (let [navigate (.. (clj->js props) -navigation -navigate)
-        entries (subscribe [:get-entries])]
+        entries (subscribe [:entries])]
     [safe-area-view {:style (:container styles)}
      [view {:style (:content-wrapper styles)}
       [text {:style (:title styles)} "Screens"]
