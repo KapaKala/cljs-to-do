@@ -7,9 +7,20 @@
             [reagent.core :as r]))
 
 (defn render-entry [entry]
-  ^{:key (:id entry)} [view {:style (:entry-container styles)}
-                       [text {:style {:color "grey" :font-family "roboto-mono-regular"}} (:id entry)]
-                       [text {:style (:entry-text styles)} (:value entry)]])
+  (let [tap-time (r/atom nil)
+        ani-val (animated-value (:done entry))
+        handle-tap #(if (and (some? @tap-time) (< (- (.now js/Date) @tap-time) 300))
+                      (do (start-animation
+                            (timing ani-val 1 250)
+                            (fn [invocation] (when invocation (dispatch [:complete-entry (:id entry)]))))
+                          (reset! tap-time (.now js/Date)))
+                      (reset! tap-time (.now js/Date)))
+        completed-style {:opacity (interpolate ani-val [0 1] [1 0.5])
+                         :transform [{:scale (interpolate ani-val [0 1] [1 0.9])}]}]
+    ^{:key (:id entry)} [touchable-opacity {:on-press #(handle-tap) :disabled (if (= (:done entry) 0) false true)}
+                         [animated-view {:style (merge (:entry-container styles) completed-style)}
+                          [text {:style {:color "grey" :font-family "roboto-mono-regular"}} (:id entry)]
+                          [text {:style (:entry-text styles)} (:value entry)]]]))
 
 (defn header [navigate]
   [view {:style (:header styles)}
@@ -38,7 +49,7 @@
 
 (defn add-entry-thing [props]
   (let [ani-val (animated-value 0)
-        input-val (r/atom "kakka")
+        input-val (r/atom nil)
         toggle-state (r/atom false)
         toggle (fn [cb] (do (start-animation (timing ani-val (if @toggle-state 0 1) 250) cb)
                             (reset! toggle-state (not @toggle-state))

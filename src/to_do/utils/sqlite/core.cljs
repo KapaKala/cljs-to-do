@@ -28,7 +28,7 @@
   (transaction "delete from entries where id = ?" id on-success on-error))
 
 (defn complete-entry [id on-success on-error]
-  (transaction "update entries set done = 1 where id = ?" id on-success on-error))
+  (transaction "update entries set done = 1 where id = ?" [id] on-success on-error))
 
 (defn clear-entries []
   (transaction "delete from entries" nil #(get-entries) #(console.warn "failed clearing table :(")))

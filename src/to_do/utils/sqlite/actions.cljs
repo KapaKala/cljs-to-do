@@ -13,6 +13,15 @@
     (assoc db :entry-error error)))
 
 (reg-event-fx
+  :complete-entry
+  (fn [cofx [_ id]]
+    {:complete-sql-entry id}))
+
+(reg-fx
+  :complete-sql-entry
+  (fn [id] (sql/complete-entry id #(sql/get-entries) #(println %))))
+
+(reg-event-fx
   :add-entry
   (fn [cofx [_ entry]]
     {:entry-to-sql entry}))
