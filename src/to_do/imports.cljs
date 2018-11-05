@@ -19,6 +19,7 @@
 (def touchable-without-feedback (r/adapt-react-class (.-TouchableWithoutFeedback ReactNative)))
 (def text-input (r/adapt-react-class (.-TextInput ReactNative)))
 (def Keyboard (.-Keyboard ReactNative))
+(def StatusBar (.-StatusBar ReactNative))
 
 (def dimensions (.get (.-Dimensions ReactNative) "window"))
 (def width (.-width dimensions))

@@ -25,7 +25,7 @@
   (transaction "insert into entries (done, value) values (?, ?)" [0 entry] on-success on-error))
 
 (defn delete-entry [id on-success on-error]
-  (transaction "delete from entries where id = ?" id on-success on-error))
+  (transaction "delete from entries where id = ?" [id] on-success on-error))
 
 (defn complete-entry [id on-success on-error]
   (transaction "update entries set done = 1 where id = ?" [id] on-success on-error))

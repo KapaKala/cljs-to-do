@@ -4,8 +4,8 @@
 
 (reg-event-db
   :set-entries
- (fn [db [_ entries]]
-   (assoc db :entries entries)))
+  (fn [db [_ entries]]
+    (assoc db :entries entries)))
 
 (reg-event-db
   :set-entry-error
@@ -32,3 +32,12 @@
                 entry
                 #(sql/get-entries)
                 #(println %))))
+
+(reg-event-fx
+  :delete-entry
+  (fn [cofx [_ id]]
+    {:delete-sql-entry id}))
+
+(reg-fx
+  :delete-sql-entry
+  (fn [id] (sql/delete-entry id #(sql/get-entries) #(println %))))
