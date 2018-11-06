@@ -6,12 +6,6 @@
             [to-do.screens.home.styles :refer [styles]]
             [reagent.core :as r]))
 
-(defn header [navigate]
-  [view {:style (:header styles)}
-   [text {:style (:title styles)} "To-do"]
-   [touchable-opacity {:on-press #(navigate "Settings")}
-    [icon {:name "ios-cog" :size 32}]]])
-
 (defn render-entry [entry]
   (let [last-tap (r/atom nil)
         completion-animation (animated-value (if (= 1 (:done entry)) 0.9 1))

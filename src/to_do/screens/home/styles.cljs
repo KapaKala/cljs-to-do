@@ -2,24 +2,16 @@
 
 (def styles {:container                 {:flex             1
                                          :background-color "white"}
-             :header                    {:margin-horizontal "2.5%"
-                                         :padding-vertical 10
-                                         :flex-direction  "row"
-                                         :justify-content "space-between"
-                                         :align-items     "center"}
              :overlay                   {:position         "absolute"
                                          :top              0
                                          :bottom           0
                                          :left             0
                                          :right            0
                                          :background-color "black"}
-             :title                     {:font-size   32
-                                         :font-family "roboto-mono-bold"
-                                         :font-weight "bold"}
-             :entry-container           {:margin-horizontal "2.5%"
+             :entry-container           {:margin-horizontal  "2.5%"
                                          :padding-horizontal 25
-                                         :background-color "black"
-                                         :justify-content "center"}
+                                         :background-color   "black"
+                                         :justify-content    "center"}
              :entry-text                {:color       "white"
                                          :font-size   18
                                          :font-family "roboto-mono-regular"}

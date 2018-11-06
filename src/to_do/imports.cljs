@@ -20,6 +20,7 @@
 (def text-input (r/adapt-react-class (.-TextInput ReactNative)))
 (def Keyboard (.-Keyboard ReactNative))
 (def StatusBar (.-StatusBar ReactNative))
+(def status-bar (r/adapt-react-class StatusBar))
 
 (def dimensions (.get (.-Dimensions ReactNative) "window"))
 (def width (.-width dimensions))

@@ -1,9 +1,10 @@
 (ns to-do.screens.home.core
   (:require [re-frame.core :refer [subscribe dispatch]]
-            [to-do.imports :refer [safe-area-view scroll-view view text]]
+            [to-do.imports :refer [safe-area-view scroll-view view text status-bar]]
+            [to-do.common.components :refer [header]]
             [to-do.utils.sqlite.subs]
             [to-do.utils.animation.core :refer [animated-value animated-view interpolate]]
-            [to-do.screens.home.components :refer [header render-entry add-entry-thing]]
+            [to-do.screens.home.components :refer [render-entry add-entry-thing]]
             [to-do.screens.home.styles :refer [styles]]))
 
 (defn home-screen [props]
@@ -11,8 +12,12 @@
         entries (subscribe [:entries])
         ani-val (animated-value 0)]
     [safe-area-view {:style (:container styles)}
+     [status-bar {:bar-style "dark-content" :animated true}]
      [animated-view {:style {:flex 1 :transform [{:scale (interpolate ani-val [0 1] [1 0.9])}]}}
-      [header navigate]
+      [header {:title "To-do"
+               :color "black"
+               :icon-name "ios-list-box"
+               :on-press #(navigate "Settings")}]
       (if (or (empty? @entries) (nil? @entries))
         [view {:style {:flex 1 :justify-content "center" :align-items "center" :padding 25 :padding-bottom 100}}
          [text {:style {:font-family "roboto-mono-regular" :color "grey"}}
