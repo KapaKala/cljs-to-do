@@ -25,3 +25,5 @@
 (def dimensions (.get (.-Dimensions ReactNative) "window"))
 (def width (.-width dimensions))
 (def height (.-height dimensions))
+
+(defonce AsyncStorage (.-AsyncStorage ReactNative))

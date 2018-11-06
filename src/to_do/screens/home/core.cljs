@@ -9,23 +9,25 @@
 
 (defn home-screen [props]
   (let [navigate (.. (clj->js props) -navigation -navigate)
+        current-table (subscribe [:current-table])
         entries (subscribe [:entries])
         ani-val (animated-value 0)]
-    [safe-area-view {:style (:container styles)}
-     [status-bar {:bar-style "dark-content" :animated true}]
-     [animated-view {:style {:flex 1 :transform [{:scale (interpolate ani-val [0 1] [1 0.9])}]}}
-      [header {:title "To-do"
-               :color "black"
-               :icon-name "ios-list-box"
-               :on-press #(navigate "Settings")}]
-      (if (or (empty? @entries) (nil? @entries))
-        [view {:style {:flex 1 :justify-content "center" :align-items "center" :padding 25 :padding-bottom 100}}
-         [text {:style {:font-family "roboto-mono-regular" :color "grey"}}
-          [text "Add entries by pressing the button in the bottom.\n\n"]
-          [text "Double tapping entries marks them as completed.\n\n"]
-          [text "Delete entries by double tapping completed entries."]]]
-        [scroll-view {:style {:width "100%"} :content-container-style {:justify-content "center" :padding-bottom 50}}
-         (for [entry @entries] ^{:key (:id entry)} [render-entry entry])])]
-     [animated-view {:style (merge (:overlay styles) {:opacity (interpolate ani-val [0 1] [0 0.333])})
-                     :pointer-events "none"}]
-     [add-entry-thing ani-val]]))
+    (when (some? @current-table)
+      [safe-area-view {:style (:container styles)}
+       [status-bar {:bar-style "dark-content" :animated true}]
+       [animated-view {:style {:flex 1 :transform [{:scale (interpolate ani-val [0 1] [1 0.9])}]}}
+        [header {:title     @current-table
+                 :color     "black"
+                 :icon-name "ios-list-box"
+                 :on-press  #(navigate "Settings")}]
+        (if (or (empty? @entries) (nil? @entries))
+          [view {:style {:flex 1 :justify-content "center" :align-items "center" :padding 25 :padding-bottom 100}}
+           [text {:style {:font-family "roboto-mono-regular" :color "grey"}}
+            [text "Add entries by pressing the button in the bottom.\n\n"]
+            [text "Double tapping entries marks them as completed.\n\n"]
+            [text "Delete entries by double tapping completed entries."]]]
+          [scroll-view {:style {:width "100%"} :content-container-style {:justify-content "center" :padding-bottom 50}}
+           (for [entry @entries] ^{:key (:id entry)} [render-entry entry])])]
+       [animated-view {:style          (merge (:overlay styles) {:opacity (interpolate ani-val [0 1] [0 0.333])})
+                       :pointer-events "none"}]
+       [add-entry-thing ani-val]])))

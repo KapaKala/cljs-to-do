@@ -10,3 +10,13 @@
   :entry-error
   (fn [db _]
     (:entry-error db)))
+
+(reg-sub
+  :tables
+  (fn [db _]
+    (:tables db)))
+
+(reg-sub
+  :current-table
+  (fn [db _]
+    (:current-table db)))

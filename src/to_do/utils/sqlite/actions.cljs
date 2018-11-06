@@ -1,6 +1,7 @@
 (ns to-do.utils.sqlite.actions
   (:require [re-frame.core :refer [dispatch reg-event-db reg-fx reg-event-fx]]
-            [to-do.utils.sqlite.core :as sql]))
+            [to-do.utils.sqlite.core :as sql]
+            [to-do.utils.asyncstorage.core :as as]))
 
 (reg-event-db
   :set-entries
@@ -41,3 +42,19 @@
 (reg-fx
   :delete-sql-entry
   (fn [id] (sql/delete-entry id #(sql/get-entries) #(println %))))
+
+(reg-event-db
+  :set-tables
+  (fn [db [_ tables]]
+    (assoc db :tables tables)))
+
+(reg-event-fx
+  :set-current-table
+  (fn [cofx [_ table]]
+    {:db (assoc (:db cofx) :current-table table)
+     :table-to-async-storage table}))
+
+(reg-fx
+  :table-to-async-storage
+  (fn [table]
+    (as/set-item "table" table #() #())))

@@ -23,6 +23,5 @@
 
 (defn init []
   (dispatch-sync [:initialize-db])
-  (do (sql/create-table)
-      (sql/get-entries))
+  (sql/initialize)
   (ocall expo "registerRootComponent" (r/reactify-component app-root)))
