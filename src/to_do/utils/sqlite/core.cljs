@@ -13,13 +13,6 @@
 (defn transaction [sql-statement args on-success on-error]
   (.transaction db (fn [tx] (.executeSql tx sql-statement (clj->js args) on-success on-error))))
 
-(defn create-table []
-  (transaction
-    (str "create table if not exists " (str @current-table) "(id integer primary key not null, done int, value text)")
-    nil
-    (fn [_] (console.log (str "created sql table " @current-table)))
-    (fn [_ err] (console.log err))))
-
 (defn get-entries []
   (transaction
     (str "select * from " @current-table)
@@ -52,7 +45,7 @@
   (transaction
     (str "delete from " @current-table)
     nil
-    #(get-entries)
+    (fn [_] (get-entries))
     (fn [_ err] (console.log err))))
 
 (defn get-tables []
@@ -62,11 +55,18 @@
     (fn [_ res] (dispatch [:set-tables (js->clj (.. res -rows -_array) :keywordize-keys true)]))
     (fn [_ err] (console.log err))))
 
+(defn create-table [{:keys [table] :or {table @current-table}}]
+  (transaction
+    (str "create table if not exists " table "(id integer primary key not null, done int, value text)")
+    nil
+    (fn [_] (get-tables))
+    (fn [_ err] (console.log err))))
+
 (defn drop-table [table]
   (transaction
     (str "drop table if exists " table)
     nil
-    #(get-tables)
+    (fn [_] (get-tables))
     (fn [_ err] (console.log err))))
 
 (defn initialize []
@@ -74,7 +74,7 @@
     "table"
     (fn [res] (p/do (dispatch-sync [:set-current-table (if (nil? res) "to_do" res)])
                     (when (some? @current-table)
-                      (do (create-table)
+                      (do (create-table {:table res})
                           (get-entries)
                           (get-tables)))))
     (fn [err] (console.warn err))))

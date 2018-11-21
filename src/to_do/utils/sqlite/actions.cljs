@@ -57,4 +57,14 @@
 (reg-fx
   :table-to-async-storage
   (fn [table]
-    (as/set-item "table" table #() #())))
+    (as/set-item "table" table #(sql/get-entries) #())))
+
+(reg-event-fx
+  :delete-table
+  (fn [cofx [_ table]]
+    {:drop-sql-table table}))
+
+(reg-fx
+  :drop-sql-table
+  (fn [table] (do (sql/drop-table table)
+                  (dispatch [:set-current-table "to_do"]))))
