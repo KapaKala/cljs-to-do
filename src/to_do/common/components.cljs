@@ -7,10 +7,11 @@
 (defn header [{:keys [title color on-press icon-name]}]
   [view {:style (:header styles)}
    [text {:style (merge (:title styles) {:color color})} title]
-   [touchable-opacity {:on-press #(on-press)}
+   [touchable-opacity {:on-press #(on-press) :hit-slop {:top 25 :right 25 :bottom 25 :left 25}}
     [icon {:name icon-name :size 32 :color color}]]])
 
 (defn form-modal [{:keys [ani-val toggle-state input-val form-text on-complete background-color primary-color]}]
+  ; Toggle's callback function receives a boolean argument, signifying whether or not the animation finished
   (let [toggle (fn [callback] (do (start-animation (timing ani-val (if @toggle-state 0 1) 250) callback)
                                   (.setBarStyle StatusBar
                                                 (if @toggle-state
