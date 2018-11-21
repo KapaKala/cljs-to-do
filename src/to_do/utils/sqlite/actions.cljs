@@ -1,5 +1,5 @@
 (ns to-do.utils.sqlite.actions
-  (:require [re-frame.core :refer [dispatch reg-event-db reg-fx reg-event-fx]]
+  (:require [re-frame.core :refer [dispatch subscribe reg-event-db reg-fx reg-event-fx]]
             [to-do.utils.sqlite.core :as sql]
             [to-do.utils.asyncstorage.core :as as]))
 
@@ -51,7 +51,7 @@
 (reg-event-fx
   :set-current-table
   (fn [cofx [_ table]]
-    {:db (assoc (:db cofx) :current-table table)
+    {:db                     (assoc (:db cofx) :current-table table)
      :table-to-async-storage table}))
 
 (reg-fx
@@ -67,4 +67,4 @@
 (reg-fx
   :drop-sql-table
   (fn [table] (do (sql/drop-table table)
-                  (dispatch [:set-current-table "to_do"]))))
+                  (when (= @(subscribe [:current-table]) table) (dispatch [:set-current-table "to_do"])))))

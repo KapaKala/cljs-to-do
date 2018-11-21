@@ -4,5 +4,7 @@
                          :background-color "blue"}
              :table-container {:flex-direction "row"
                                :justify-content "space-between"
-                               :padding-horizontal 25
-                               :padding-vertical 12.5}})
+                               :align-items "center"
+                               :padding-horizontal 20}
+             :text {:font-family "roboto-mono-regular"
+                    :color "white"}})
