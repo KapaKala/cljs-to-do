@@ -18,11 +18,11 @@
 (def validate-spec
   (if goog.DEBUG
     (->interceptor
-        :id :validate-spec
-        :after (fn [context]
-                 (let [db (-> context :effects :db)]
-                   (check-and-throw ::db/app-db db)
-                   context)))
+      :id :validate-spec
+      :after (fn [context]
+               (let [db (-> context :effects :db)]
+                 (check-and-throw ::db/app-db db)
+                 context)))
     ->interceptor))
 
 ;; -- Handlers --------------------------------------------------------------

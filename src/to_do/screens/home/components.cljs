@@ -2,7 +2,8 @@
   (:require [re-frame.core :refer [dispatch]]
             [to-do.utils.sqlite.actions]
             [to-do.imports :refer [view text touchable-opacity text-input icon width height Keyboard StatusBar]]
-            [to-do.utils.animation.core :refer [animated animated-view animated-value animated-text interpolate timing start-animation sequence parallel]]
+            [to-do.utils.animation.core :refer [animated animated-view animated-value animated-text interpolate
+                                                timing start-animation sequence parallel]]
             [to-do.screens.home.styles :refer [styles]]
             [reagent.core :as r]))
 
@@ -12,6 +13,7 @@
         fade-animation (animated-value 0)
         height-animation (animated-value 100)
         padding-animation (animated-value 1)
+        multiplied-animation (.multiply animated fade-animation completion-animation)
         max-height (r/atom nil)
         set-height (fn [height] (do (start-animation (timing height-animation height 1) #())
                                     (reset! max-height height)))
@@ -32,7 +34,6 @@
                                (fn [invocation] (complete-entry invocation)))
                              (reset! last-tap nil)))
                        (reset! last-tap (.now js/Date))))
-        multiplied-animation (.multiply animated fade-animation completion-animation)
         completed-style {:opacity          (interpolate multiplied-animation [0 0.9 1] [0 0.7 1])
                          :margin-bottom    (interpolate padding-animation [0 1] ["0%" "2.5%"])
                          :padding-vertical (interpolate padding-animation [0 1] [0 25])
@@ -44,8 +45,24 @@
        :component-did-mount
        (fn [] (start-animation (timing fade-animation 1 250) #()))
        :reagent-render
-       (let [] (fn [entry] [touchable-opacity {:on-press #(handle-tap (:done entry))}
-                            [animated-view {:style    (merge (:entry-container styles) (when (not (nil? @max-height)) {:height height-animation}) completed-style)
-                                            :onLayout #(when (nil? @max-height) (set-height (.. % -nativeEvent -layout -height)))}
-                             [animated-text {:style (merge {:color "grey" :font-family "roboto-mono-regular"} text-animation)} (:id entry)]
-                             [animated-text {:style (merge (:entry-text styles) text-animation)} (:value entry)]]]))})))
+       (fn [entry]
+         [touchable-opacity {:on-press #(handle-tap (:done entry))}
+          [animated-view {:style    (merge (:entry-container styles)
+                                           (when (not (nil? @max-height)) {:height height-animation})
+                                           completed-style)
+                          :onLayout #(when (nil? @max-height) (set-height (.. % -nativeEvent -layout -height)))}
+           [animated-text {:style (merge {:color "grey" :font-family "roboto-mono-regular"} text-animation)} (:id entry)]
+           [animated-text {:style (merge (:entry-text styles) text-animation)} (:value entry)]]])})))
+
+(defn instructions []
+  (let [opacity-animation (animated-value 0)]
+    (r/create-class
+      {:component-did-mount
+       (fn [] (start-animation (timing opacity-animation 1 250) nil))
+       :reagent-render
+       (fn []
+         [animated-view {:style (merge (:instructions-container styles) {:opacity opacity-animation})}
+          [text {:style (:instructions-text styles)}
+           [text "Add entries by pressing the button in the bottom.\n\n"]
+           [text "Double tapping entries marks them as completed.\n\n"]
+           [text "Delete entries by double tapping completed entries."]]])})))

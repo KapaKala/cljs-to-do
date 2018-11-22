@@ -8,8 +8,8 @@
 (def stack-navigator (.-createStackNavigator ReactNavigation))
 
 (defn routing []
-  (stack-navigator #js{
+  (stack-navigator #js{:Home     (r/reactify-component home-screen)
+                       :Settings (r/reactify-component settings-screen)
                        ;:Debug    (r/reactify-component debug-screen)
-                       :Home     (r/reactify-component home-screen)
-                       :Settings (r/reactify-component settings-screen)}
+                       }
                    #js{:headerMode "none"}))

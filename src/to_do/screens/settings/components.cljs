@@ -2,7 +2,8 @@
   (:require [re-frame.core :refer [dispatch subscribe]]
             [reagent.core :as r]
             [to-do.imports :refer [view text icon touchable-opacity scroll-view]]
-            [to-do.utils.animation.core :refer [animated-view animated-value animated-text start-animation interpolate timing sequence]]
+            [to-do.utils.animation.core :refer [animated-view animated-value animated-text
+                                                start-animation interpolate timing sequence]]
             [to-do.screens.settings.styles :refer [styles]]))
 
 (defn render-table [table current-table]
@@ -19,12 +20,14 @@
        :reagent-render
        (fn [table current-table]
          [touchable-opacity {:on-press #(dispatch [:set-current-table (:name table)])}
-          [animated-view {:style (merge (:table-container styles) {:opacity          opacity-animation
-                                                                   :height           (interpolate height-animation [0 1] [0 60])
-                                                                   :padding-vertical (interpolate height-animation [0 1] [0 12.5])})}
+          [animated-view {:style (merge (:table-container styles)
+                                        {:opacity          opacity-animation
+                                         :height           (interpolate height-animation [0 1] [0 60])
+                                         :padding-vertical (interpolate height-animation [0 1] [0 12.5])})}
            [text {:style (merge (:text styles)
                                 {:font-size 18}
-                                (when (= (:name table) current-table) {:font-family "roboto-mono-bold"}))} (:name table)]
+                                (when (= (:name table) current-table) {:font-family "roboto-mono-bold"}))}
+            (:name table)]
            (if (= (:name table) "to_do")
              [text {:style {:font-family "roboto-mono-regular" :color "white"}} "default"]
              [view {:style {:flex-direction "row" :align-items "center"}}

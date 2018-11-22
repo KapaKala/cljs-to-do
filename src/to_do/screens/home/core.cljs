@@ -4,7 +4,7 @@
             [to-do.common.components :refer [header form-modal overlay]]
             [to-do.utils.sqlite.subs]
             [to-do.utils.animation.core :refer [animated-value animated-view interpolate]]
-            [to-do.screens.home.components :refer [render-entry]]
+            [to-do.screens.home.components :refer [render-entry instructions]]
             [to-do.screens.home.styles :refer [styles]]
             [reagent.core :as r]))
 
@@ -26,12 +26,7 @@
                  :icon-name "ios-list-box"
                  :on-press  #(navigate "Settings")}]
         (if (or (empty? @entries) (nil? @entries))
-          ; Display instructions if no entries
-          [view {:style {:flex 1 :justify-content "center" :align-items "center" :padding 25 :padding-bottom 100}}
-           [text {:style {:font-family "roboto-mono-regular" :color "grey"}}
-            [text "Add entries by pressing the button in the bottom.\n\n"]
-            [text "Double tapping entries marks them as completed.\n\n"]
-            [text "Delete entries by double tapping completed entries."]]]
+          [instructions]
           [scroll-view {:style {:width "100%"} :content-container-style {:justify-content "center" :padding-bottom 50}}
            (for [entry @entries] ^{:key (:id entry)} [render-entry entry])])]
        [overlay ani-val]
