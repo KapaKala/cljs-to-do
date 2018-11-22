@@ -14,8 +14,7 @@
 
 (defn timing [val to-val duration] (.timing animated val #js{:toValue to-val
                                                              :duration duration
-                                                             :easing (.in easing)
-                                                             }))
+                                                             :easing (.bezier easing 0.0, 0.0, 0.2, 1)}))
 
 (defn interpolate [val input output] (.interpolate val #js{:inputRange (clj->js input)
                                                            :outputRange (clj->js output)
