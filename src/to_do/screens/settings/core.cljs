@@ -7,7 +7,11 @@
             [to-do.screens.settings.styles :refer [styles]]
             [to-do.utils.sqlite.core :as sql]
             [to-do.utils.sqlite.subs]
-            [reagent.core :as r]))
+            [reagent.core :as r]
+            [clojure.string :as s]))
+
+(defn input->snake-case [input]
+  (s/lower-case (s/replace (s/trim input) " " "_")))
 
 (defn settings-screen [props]
   (let [go-back (.. (clj->js props) -navigation -goBack)
@@ -16,10 +20,11 @@
         ani-val (animated-value 0)
         input-val (r/atom nil)
         toggle-state (r/atom false)
-        save-input (fn [invocation] (when invocation (do (sql/create-table {:table @input-val})
-                                                         (dispatch [:set-current-table @input-val])
-                                                         (sql/get-tables)
-                                                         (reset! input-val nil))))]
+        save-input (fn [invocation] (when invocation (let [altered-input (input->snake-case @input-val)]
+                                                       (do (sql/create-table {:table altered-input})
+                                                           (dispatch [:set-current-table altered-input])
+                                                           (sql/get-tables)
+                                                           (reset! input-val nil)))))]
     [safe-area-view {:style (:container styles)}
      [status-bar {:bar-style "light-content" :animated true}]
      [animated-view {:style {:flex 1 :transform [{:scale (interpolate ani-val [0 1] [1 0.9])}]}}
